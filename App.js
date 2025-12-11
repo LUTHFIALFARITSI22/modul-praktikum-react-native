@@ -16,7 +16,7 @@ export default function App() {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.welcome}>Selamat Datang!</Text>
+        <Text style={styles.welcome}>HALO, MUHAMMAD LUTHFI ALFARITSI</Text>
         <Text style={styles.description}>
           Modul ini akan membantu Anda mempelajari pengembangan aplikasi mobile
           menggunakan React Native dan Expo.
@@ -48,7 +48,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3498db',
+    backgroundColor: '#064821ff',
   },
   header: {
     alignItems: 'center',
