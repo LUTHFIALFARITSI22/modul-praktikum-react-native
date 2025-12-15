@@ -1,20 +1,21 @@
-// App.js
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text } from 'react-native';
-import { Header } from './src/components';
+import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
+import ProfileCard from './src/components/ProfileCard';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Header 
-        title="MUHAMMAD LUTHFI ALFARITSI" 
-        subtitle="105841117122"
-      />
-      <View style={styles.content}>
-        <Text style={styles.text}>Konten aplikasi di sini</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Profil Mahasiswa</Text>
       </View>
-      <StatusBar style="ligth" />
-    </View>
+     
+      <ProfileCard
+        name="MUHAMMAD LUTHFI ALFARITSI"
+        nim="105841117122"
+        jurusan="Teknik Informatika"
+        imageUri="https://via.placeholder.com/100"
+        onPress={() => alert('Card ditekan!')}
+      />
+    </SafeAreaView>
   );
 }
 
@@ -23,14 +24,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  header: {
+    backgroundColor: '#3498db',
     padding: 20,
+    paddingTop: 50,
   },
-  text: {
-    fontSize: 16,
-    color: '#7f8c8d',
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
   },
 });
