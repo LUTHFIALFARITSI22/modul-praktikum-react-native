@@ -1,67 +1,97 @@
 // App.js
 import { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
-import CounterButton from './src/components/CounterButton';
+import { 
+  SafeAreaView, 
+  View, 
+  Text, 
+  FlatList, 
+  TextInput,
+  TouchableOpacity,
+  StyleSheet 
+} from 'react-native';
+import TodoItem from './src/components/TodoItem';
+
+const INITIAL_TODOS = [
+  { id: '1', title: 'Belajar React Native', completed: true, date: '10 Des 2024' },
+  { id: '2', title: 'Mengerjakan Tutorial 06', completed: false, date: '10 Des 2024' },
+  { id: '3', title: 'Upload Screenshot', completed: false, date: '10 Des 2024' },
+];
 
 export default function App() {
-  const [count, setCount] = useState(0);
+  const [todos, setTodos] = useState(INITIAL_TODOS);
+  const [newTodo, setNewTodo] = useState('');
 
-  const increment = () => setCount(count + 1);
-  const decrement = () => setCount(count - 1);
-  const reset = () => setCount(0);
-
-  // Tentukan warna berdasarkan nilai count
-  const getCountColor = () => {
-    if (count > 0) return '#27ae60'; // Hijau
-    if (count < 0) return '#e74c3c'; // Merah
-    return '#7f8c8d'; // Abu-abu
+  const addTodo = () => {
+    if (newTodo.trim() === '') return;
+    
+    const todo = {
+      id: Date.now().toString(),
+      title: newTodo,
+      completed: false,
+      date: new Date().toLocaleDateString('id-ID', { 
+        day: 'numeric', 
+        month: 'short', 
+        year: 'numeric' 
+      }),
+    };
+    
+    setTodos([todo, ...todos]);
+    setNewTodo('');
   };
+
+  const toggleTodo = (id) => {
+    setTodos(todos.map(todo =>
+      todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ));
+  };
+
+  const deleteTodo = (id) => {
+    setTodos(todos.filter(todo => todo.id !== id));
+  };
+
+  const completedCount = todos.filter(t => t.completed).length;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Counter App</Text>
-        <Text style={styles.headerSubtitle}>Belajar State dan Props</Text>
-      </View>
-
-      <View style={styles.content}>
-        <View style={styles.countContainer}>
-          <Text style={styles.label}>Nilai Counter:</Text>
-          <Text style={[styles.count, { color: getCountColor() }]}>
-            {count}
-          </Text>
-          <Text style={styles.status}>
-            {count > 0 ? 'Positif 📈' : count < 0 ? 'Negatif 📉' : 'Nol ⚖️'}
-          </Text>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <CounterButton
-            title="- 1"
-            onPress={decrement}
-            variant="danger"
-          />
-          <CounterButton
-            title="Reset"
-            onPress={reset}
-            variant="secondary"
-          />
-          <CounterButton
-            title="+ 1"
-            onPress={increment}
-            variant="primary"
-          />
-        </View>
-      </View>
-
-      <View style={styles.infoBox}>
-        <Text style={styles.infoTitle}>💡 Penjelasan:</Text>
-        <Text style={styles.infoText}>
-          • State: count = {count}{'\n'}
-          • Props: title, onPress, variant pada button{'\n'}
-          • setCount() memicu re-render
+        <Text style={styles.headerTitle}>📝 Todo List</Text>
+        <Text style={styles.headerSubtitle}>
+          {completedCount}/{todos.length} selesai
         </Text>
       </View>
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Tambah tugas baru..."
+          value={newTodo}
+          onChangeText={setNewTodo}
+          onSubmitEditing={addTodo}
+        />
+        <TouchableOpacity style={styles.addButton} onPress={addTodo}>
+          <Text style={styles.addButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={todos}
+        renderItem={({ item }) => (
+          <TodoItem
+            item={item}
+            onToggle={toggleTodo}
+            onDelete={deleteTodo}
+          />
+        )}
+        keyExtractor={item => item.id}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyEmoji}>🎉</Text>
+            <Text style={styles.emptyText}>Tidak ada tugas!</Text>
+            <Text style={styles.emptySubtext}>Tambahkan tugas baru</Text>
+          </View>
+        }
+        contentContainerStyle={todos.length === 0 && styles.emptyList}
+      />
     </SafeAreaView>
   );
 }
@@ -75,7 +105,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#3498db',
     padding: 20,
     paddingTop: 50,
-    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 24,
@@ -87,51 +116,50 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.8)',
     marginTop: 5,
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  countContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
-  label: {
-    fontSize: 16,
-    color: '#7f8c8d',
-    marginBottom: 10,
-  },
-  count: {
-    fontSize: 80,
-    fontWeight: 'bold',
-  },
-  status: {
-    fontSize: 18,
-    marginTop: 10,
-    color: '#7f8c8d',
-  },
-  buttonContainer: {
+  inputContainer: {
     flexDirection: 'row',
-    gap: 15,
+    padding: 15,
+    gap: 10,
   },
-  infoBox: {
-    backgroundColor: '#e8f4f8',
-    margin: 20,
+  input: {
+    flex: 1,
+    backgroundColor: 'white',
     padding: 15,
     borderRadius: 10,
-    borderLeftWidth: 4,
-    borderLeftColor: '#3498db',
+    fontSize: 16,
   },
-  infoTitle: {
-    fontSize: 14,
+  addButton: {
+    backgroundColor: '#27ae60',
+    width: 50,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#2c3e50',
-    marginBottom: 5,
   },
-  infoText: {
-    fontSize: 12,
-    color: '#7f8c8d',
-    lineHeight: 20,
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 50,
+  },
+  emptyEmoji: {
+    fontSize: 60,
+    marginBottom: 15,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#2c3e50',
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#95a5a6',
+    marginTop: 5,
+  },
+  emptyList: {
+    flex: 1,
   },
 });
