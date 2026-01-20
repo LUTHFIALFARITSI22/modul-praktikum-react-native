@@ -17,7 +17,7 @@ export default function App() {
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.welcome}>HALO, MUHAMMAD LUTHFI ALFARITSI</Text>
+        <Text style={styles.welcome}>HALO, ZULFITRA</Text>
         <Text style={styles.description}>
           Modul ini akan membantu Anda mempelajari pengembangan aplikasi mobile
           menggunakan React Native dan Expo.

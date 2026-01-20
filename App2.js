@@ -9,7 +9,7 @@ export default function App() {
       </View>
      
       <ProfileCard
-        name="MUHAMMAD LUTHFI ALFARITSI"
+        name="MUHAMMMAD LUTHFI ALFARITSI"
         nim="105841117122"
         jurusan="Teknik Informatika"
         imageUri="https://via.placeholder.com/100"
